@@ -3,28 +3,24 @@ import bcrypt from 'bcryptjs';
 import generateTokenAndSetCookies from "../utils/generateToken.js";
 export const login = async (req, res) => {
     try {
-        const { userName, password } = req.body
-        const user = await User.findOne({ userName })
-        const isPasswordCorrect = await bcrypt.compare(password, user?.password || "");
-        if (!user, !isPasswordCorrect) {
-            return res.status(400).json({
-                error: "Invalid username or password"
-            })
-        }
-        generateTokenAndSetCookies(user?._id, res)
-        res.status(200).json({
-            _id: user._id,
-            fullName: user.fullName,
-            userName: user.userName,
-            profilePic: user.profilePic
-        })
+      const { userName, password } = req.body;
+      const user = await User.findOne({ userName });
+      if (!user) {
+        throw new Error("Invalid username or password");
+      }
+      const isPasswordCorrect = await bcrypt.compare(password, user.password);
+      if (!isPasswordCorrect) {
+        throw new Error("Invalid username or password");
+      }
+      const token = jwt.sign({ userId: user._id }, "your_secret_key", {
+        expiresIn: "1h",
+      });
+      res.status(200).json({ token, user: { _id: user._id, fullName: user.fullName, userName: user.userName, profilePic: user.profilePic } });
     } catch (err) {
-        console.log('Error in login: ', err.message)
-        res.status(500).json({
-            error: "Internal Server Error"
-        })
+      console.log('Error in login: ', err.message);
+      res.status(400).json({ error: err.message });
     }
-}
+  }
 
 export const logout = (req, res) => {
     try {

@@ -1,3 +1,4 @@
+// frontend/src/hooks/useLogin.js
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useAuthContext } from "../context/AuthContext";
@@ -7,30 +8,32 @@ const useLogin = () => {
   const { setAuthUser } = useAuthContext();
 
   const login = async (userName, password) => {
-    const success = handleInputErrors(userName, password);
-    if (!success) return;
-    setLoading(true);
     try {
+      if (!userName || !password) {
+        toast.error("Please fill in all fields");
+        return;
+      }
+
+      setLoading(true);
       const res = await fetch(
         "https://chat-app-gqtq.onrender.com/api/auth/login",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userName, password }),
-        },
-        { withCredentials: true }
+        }
       );
 
-      const data = await res.json();
-      if (data.error) {
-        throw new Error(data.error);
+      if (!res.ok) {
+        throw new Error("Invalid username or password");
       }
 
-      localStorage.setItem("chat-user", JSON.stringify(data));
+      const data = await res.json();
+      localStorage.setItem("token", data.token);
+      setAuthUser(data.user);
       toast.success("Login Success");
-      setAuthUser(data);
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.message || "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -38,13 +41,5 @@ const useLogin = () => {
 
   return { loading, login };
 };
+
 export default useLogin;
-
-function handleInputErrors(userName, password) {
-  if (!userName || !password) {
-    toast.error("Please fill in all fields");
-    return false;
-  }
-
-  return true;
-}
