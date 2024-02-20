@@ -11,7 +11,8 @@ const useGetMessages = () => {
       setLoading(true);
       try {
         const res = await fetch(
-          `https://chat-app-gqtq.onrender.com/api/message/${selectedConversation._id}`
+          `https://chat-app-gqtq.onrender.com/api/message/${selectedConversation._id}`,
+          { withCredentials: true }
         );
         const data = await res.json();
         if (data.error) throw new Error(data.error);

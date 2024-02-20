@@ -14,7 +14,8 @@ const useLogout = () => {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-        }
+        },
+        { withCredentials: true }
       );
       const data = await res.json();
       if (data.error) {

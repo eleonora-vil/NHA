@@ -36,7 +36,8 @@ const useSignup = () => {
             confirmPassword,
             gender,
           }),
-        }
+        },
+        { withCredentials: true }
       );
 
       const data = await res.json();
