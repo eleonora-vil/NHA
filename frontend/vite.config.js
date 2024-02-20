@@ -1,3 +1,5 @@
+console.log("API_URL:", process.env.API_URL);
+
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
