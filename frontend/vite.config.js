@@ -13,7 +13,7 @@ export default defineConfig({
       // Proxy requests that start with '/api'
       "/api": {
         // Target URL where the API requests will be forwarded
-        target: 'https://chat-app-gqtq.onrender.com'
+        target: process.env.API_URL || 'https://chat-app-gqtq.onrender.com'
       }
     }
   }
