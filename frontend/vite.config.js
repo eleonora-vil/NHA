@@ -1,15 +1,20 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// https://vitejs.dev/config/
 export default defineConfig({
+  // Plugins for Vite
   plugins: [react()],
+  // Configuration for the development server
   server: {
+    // Specify the port for the development server
     port: 3000,
+    // Proxy configuration to forward API requests
     proxy: {
+      // Proxy requests that start with '/api'
       "/api": {
+        // Target URL where the API requests will be forwarded
         target: 'https://chat-app-gqtq.onrender.com'
       }
     }
   }
-})
+});
